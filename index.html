@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="css/panel.css" type="text/css">
+<link rel="stylesheet" href="css/header.css" type="text/css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@hpcc-js/wasm/dist/index.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<link rel="stylesheet" href="css/editor.css" type="text/css">
+<title>VegaPlus Editor</title>
+</head>
+<body style="background-color: gray;">      
+<div class="header">
+  <div class="header-left">
+    <div class="box">
+      <select id="VegaType">
+        <option value="DuckDB">Vega-DuckDB</option>
+        <option value="SQLite">Vega-SQLite</option>
+        <option value="Vega">Vega</option>
+      </select>
+    </div> 
+    <div style="padding-left: 195px; padding-top: 5px;">
+      <a id="run" class="header-button" style="padding-left: 20px; padding-right: 20px;"> <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header-icon"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Run </a>
+      <a class="header-button" style="padding-left: 20px; padding-right: 20px;"> <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header-icon"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg> Export </a>
+      <a class="header-button" style="padding-left: 20px; padding-right: 20px;"> <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header-icon"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> Examples </a>  
+    </div>
+  </div>
+
+    
+    <div class="header-right">
+      <a style="padding: 0px; padding-right: 10px;"> <img src="vp.png" width="38" height="38"> </a>
+    </div>
+</div>
+    
+<div class="split left" style="padding-top: 2px;">
+  <div class="w3-bar w3-light-grey" style="padding-left: 10px; font-size: 12px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
+    <button class="w3-bar-item w3-button tablink w3-white" onclick="openSpecification(event,'VegaSpec')">SPECIFICATION</button>
+    <button class="w3-bar-item w3-button tablink" onclick="openSpecification(event,'DiffSpec')">DIFFERENCE</button>
+  </div>
+
+  <div id="VegaSpec" class="w3-container city">
+    <div id="editor" style="top: 35px;">
+      {"Test": 1234}
+    </div>
+  </div>
+  
+  
+  <div id="DiffSpec" class="w3-container w3-black city" style="display:none; height: 100%;">
+    <h2>Tokyo</h2>
+    <p>Tokyo is the capital of Japan.</p>
+  </div>
+</div>
+
+<div class="split right" style="padding-top: 2px; padding-left: 2px;">
+    <div class="w3-panel w3-light-grey" style="height: 60%; margin-top:0px; margin-bottom: 0px;"><div class="w3-panel w3-light-grey" id="Visualization"></div><div id="FullScreen" class="fullscreen-open"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg></div></div>
+    <div class="w3-panel w3-card" style="height: 40%; margin-top:0px; margin-bottom: 0px; padding: 0px; padding-top: 2px;">
+    
+      <div class="w3-bar w3-light-grey" style="width: 100%;  font-size: 12px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
+        <button class="w3-bar-item w3-button tablink1 w3-white" onclick="openViewer(event,'DataViewer')">DATA VIEWER</button>
+        <button class="w3-bar-item w3-button tablink1" onclick="openViewer(event,'Dataflow')">DATAFLOW VIEWER</button>
+        <button class="w3-bar-item w3-button tablink1" onclick="openViewer(event,'Signal')">SIGNAL VIEWER</button>
+        <button class="w3-bar-item w3-button tablink1" onclick="openViewer(event,'Performance')">PERFORMANCE</button>
+      </div>
+    
+      <div id="DataViewer" class="w3-container w3-white city1" >
+        <p id='showData' style="overflow:auto; height: 200px;"></p>
+      </div>
+      
+      
+      <div id="Dataflow" class="w3-container w3-black city1" style="display:none">
+        <div id="graph-placeholder" style="overflow:auto; height: 200px;" ondblclick="fullScreenGraph()"></div>
+      </div>
+
+      <div id="Signal" class="w3-container w3-white city1" style="display:none">
+        <p id='signalData' style="overflow:auto; height: 200px;"></p>
+      </div>
+      
+      <div id="Performance" class="w3-container w3-black city1" style="display:none; height: 100%;">
+        <h2>Performance Metrics</h2>
+        <p>This is a Work in Progress</p>
+      </div>
+    
+    
+    </div>
+</div>
+    
+<!-- <script src="ts-js/main.js" type="text/javascript" charset="utf-8"></script> -->
+<script src="src/demo.ts"></script>
+<script>
+$( '#FullScreen' ).click( function() {
+  document.getElementById("Visualization").requestFullscreen();
+});
+
+function fullScreenGraph() {
+  document.getElementById("graph-placeholder").requestFullscreen();
+}
+
+function openSpecification(evt, cityName) {
+  var i, x, tablinks;
+  x = document.getElementsByClassName("city");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablink");
+  for (i = 0; i < x.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" w3-white", "");
+  }
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.className += " w3-white";
+}
+
+function openViewer(evt, cityName) {
+  var i, x, tablinks;
+  x = document.getElementsByClassName("city1");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablink1");
+  for (i = 0; i < x.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" w3-white", "");
+  }
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.className += " w3-white";
+}
+
+</script>
+
+</body>
+</html> 
+
+
+
+
+
+
+
+
+
