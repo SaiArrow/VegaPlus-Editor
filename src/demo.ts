@@ -40,6 +40,18 @@ var db = DuckDBs()
 var SQL_db = sqliteDB()
 
 
+function download(filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+  
+    element.style.display = 'none';
+    document.body.appendChild(element);
+  
+    element.click();
+  
+    document.body.removeChild(element);
+  }
 
 async function sqliteDB(){
   var data_url = require("../data/sql.db")
@@ -196,7 +208,8 @@ db.then(function(db){
         document.getElementById('FlightsDuckDB').addEventListener('click', event => {examples(event, flights_vegaplus_spec, "table", "DuckDB")});
         document.getElementById('FlightsSQL').addEventListener('click', event => {examples(event, flights_vegaplus_spec, "table", "SQLite")});
         document.getElementById('CarsVega').addEventListener('click', event => {examples(event, cars_spec, "cars", "Vega")});
-
+        document.getElementById('myExport').addEventListener('click', event => {download(JSON.parse(vseditor.getValue().toString().trim())["source"].toString()+'.json', editor.getValue().toString())})
 
     });
+
 });

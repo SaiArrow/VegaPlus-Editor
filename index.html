@@ -23,7 +23,7 @@
     </div> 
     <div style="padding-left: 195px; padding-top: 5px;">
       <a id="run" class="header-button" style="padding-left: 20px; padding-right: 20px;"> <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header-icon"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Run </a>
-      <a id="myExport" class="header-button" style="padding-left: 20px; padding-right: 20px;"> <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header-icon"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg> Export </a>
+      <a id="myExport" class="header-button" style="padding-left: 20px; padding-right: 20px;"> <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header-icon"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg> Download Spec </a>
       <a id="myExamples" class="header-button" style="padding-left: 20px; padding-right: 20px;"> <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header-icon"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> Examples </a>  
     </div>
   </div>
@@ -33,19 +33,6 @@
       <a id="myHelp" class="header-button" style="padding-right: 20px;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header-icon"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>Help</a>
       <a style="padding: 0px; padding-right: 10px;"> <img src="vp.png" width="38" height="38"> </a>
     </div>
-</div>
-
-<div id="Export" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <span id ="exp_close" class="close">&times;</span>
-      <h2>Export</h2>
-    </div>
-    <div class="modal-body">
-      <p>Some text in the Modal Body</p>
-      <p>Some other text...</p>
-    </div>
-  </div>
 </div>
 
 <div id="Examples" class="modal">
@@ -90,8 +77,8 @@
       <span id="help_close" class="close">&times;</span>
       <h2>Help</h2>
     </div>
-    <div class="modal-body">
-      <p>Some text in the Modal Body</p>
+    <div class="modal-body" style="color: black;">
+      <p>Some text in the Help Body</p>
       <p>Some other text...</p>
     </div>
   </div>
@@ -192,23 +179,6 @@ function openViewer(evt, cityName) {
 
 
 
-
-
-
-var exp_modal = document.getElementById("Export");
-var exp_btn = document.getElementById("myExport");
-var exp_span = document.getElementById("exp_close");
-exp_btn.onclick = function() {
-  exp_modal.style.display = "block";
-}
-exp_span.onclick = function() {
-  exp_modal.style.display = "none";
-}
-window.onclick = function(event) {
-  if (event.target == exp_modal) {
-    exp_modal.style.display = "none";
-  }
-}
 
 var exa_modal = document.getElementById("Examples");
 var exa_btn = document.getElementById("myExamples");

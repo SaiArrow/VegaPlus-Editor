@@ -28,7 +28,9 @@
   },
   "scripts": {
     "cleanup": "rm -rf .cache dist node_modules",
-    "start": "parcel index.html --https"
+    "start": "parcel index.html --https",
+    "build": "yarn --frozen-lockfile && parcel build --public-url '/vegaplus/' ./index.html --detailed-report",
+    "deploy": "yarn build && gh-pages -d dist"
   },
   "devDependencies": {
     "gh-pages": "^3.2.3",
