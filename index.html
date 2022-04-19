@@ -23,21 +23,87 @@
     </div> 
     <div style="padding-left: 195px; padding-top: 5px;">
       <a id="run" class="header-button" style="padding-left: 20px; padding-right: 20px;"> <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header-icon"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Run </a>
-      <a class="header-button" style="padding-left: 20px; padding-right: 20px;"> <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header-icon"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg> Export </a>
-      <a class="header-button" style="padding-left: 20px; padding-right: 20px;"> <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header-icon"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> Examples </a>  
+      <a id="myExport" class="header-button" style="padding-left: 20px; padding-right: 20px;"> <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header-icon"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg> Export </a>
+      <a id="myExamples" class="header-button" style="padding-left: 20px; padding-right: 20px;"> <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header-icon"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> Examples </a>  
     </div>
   </div>
 
     
     <div class="header-right">
+      <a id="myHelp" class="header-button" style="padding-right: 20px;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header-icon"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>Help</a>
       <a style="padding: 0px; padding-right: 10px;"> <img src="vp.png" width="38" height="38"> </a>
     </div>
 </div>
-    
+
+<div id="Export" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span id ="exp_close" class="close">&times;</span>
+      <h2>Export</h2>
+    </div>
+    <div class="modal-body">
+      <p>Some text in the Modal Body</p>
+      <p>Some other text...</p>
+    </div>
+  </div>
+</div>
+
+<div id="Examples" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span id="exa_close" class="close">&times;</span>
+      <h2>Examples</h2>
+    </div>
+    <div class="modal-body">
+      <div class="item-group">
+        <h4 class="spec-type">Bar Charts</h4>
+        <div class="items" style="color: black;">
+          <div id="CarsDuckDB" class="item">
+            <div style="background-image: url(&quot;images/bar-chart.vg.png&quot;);" class="img"></div>
+            <div class="name">Cars DuckDB Chart</div>
+          </div>
+          <div id="CarsSQL" class="item">
+            <div style="background-image: url(&quot;images/stacked-bar-chart.vg.png&quot;);" class="img"></div>
+            <div class="name">Cars SQLite Chart</div>
+          </div>
+          <div id="FlightsDuckDB" class="item">
+            <div style="background-image: url(&quot;images/grouped-bar-chart.vg.png&quot;);" class="img"></div>
+            <div class="name">FLights DuckDB Chart</div>
+          </div>
+          <div id="FlightsSQL" class="item">
+            <div style="background-image: url(&quot;images/nested-bar-chart.vg.png&quot;);" class="img"></div>
+            <div class="name">FLights SQLite Chart</div>
+          </div>
+          <div id="CarsVega" class="item">
+            <div style="background-image: url(&quot;images/population-pyramid.vg.png&quot;);" class="img"></div>
+            <div class="name">Cars Vega Chart</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="Help" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span id="help_close" class="close">&times;</span>
+      <h2>Help</h2>
+    </div>
+    <div class="modal-body">
+      <p>Some text in the Modal Body</p>
+      <p>Some other text...</p>
+    </div>
+  </div>
+</div>
+
+
+
+
 <div class="split left" style="padding-top: 2px;">
   <div class="w3-bar w3-light-grey" style="padding-left: 10px; font-size: 12px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
     <button class="w3-bar-item w3-button tablink w3-white" onclick="openSpecification(event,'VegaSpec')">SPECIFICATION</button>
-    <button class="w3-bar-item w3-button tablink" onclick="openSpecification(event,'DiffSpec')">DIFFERENCE</button>
+    <button class="w3-bar-item w3-button tablink" onclick="openSpecification(event,'DiffSpec')">DATA SOURCE</button>
   </div>
 
   <div id="VegaSpec" class="w3-container city">
@@ -48,14 +114,13 @@
   
   
   <div id="DiffSpec" class="w3-container w3-black city" style="display:none; height: 100%;">
-    <h2>Tokyo</h2>
-    <p>Tokyo is the capital of Japan.</p>
+    <pre id="editor" style="top: 35px;">{"source":"table"}</pre>
   </div>
 </div>
 
 <div class="split right" style="padding-top: 2px; padding-left: 2px;">
     <div class="w3-panel w3-light-grey" style="height: 60%; margin-top:0px; margin-bottom: 0px;"><div class="w3-panel w3-light-grey" id="Visualization"></div><div id="FullScreen" class="fullscreen-open"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg></div></div>
-    <div class="w3-panel w3-card" style="height: 40%; margin-top:0px; margin-bottom: 0px; padding: 0px; padding-top: 2px;">
+    <div class="w3-panel w3-card" style="height: 40%; margin-top:0px; margin-bottom: 0px; padding: 0px; padding-top: 2px; background-color: white;">
     
       <div class="w3-bar w3-light-grey" style="width: 100%;  font-size: 12px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
         <button class="w3-bar-item w3-button tablink1 w3-white" onclick="openViewer(event,'DataViewer')">DATA VIEWER</button>
@@ -64,17 +129,17 @@
         <button class="w3-bar-item w3-button tablink1" onclick="openViewer(event,'Performance')">PERFORMANCE</button>
       </div>
     
-      <div id="DataViewer" class="w3-container w3-white city1" >
-        <p id='showData' style="overflow:auto; height: 200px;"></p>
+      <div id="DataViewer" class="w3-container w3-white city1">
+        <p id='showData' style="overflow:auto; height: 12em;"></p>
       </div>
       
       
       <div id="Dataflow" class="w3-container w3-black city1" style="display:none">
-        <div id="graph-placeholder" style="overflow:auto; height: 200px;" ondblclick="fullScreenGraph()"></div>
+        <div id="graph-placeholder" style="overflow:auto; height: 300px;" ondblclick="fullScreenGraph()"></div>
       </div>
 
       <div id="Signal" class="w3-container w3-white city1" style="display:none">
-        <p id='signalData' style="overflow:auto; height: 200px;"></p>
+        <p id='signalData' style="overflow:auto; height: 12em"></p>
       </div>
       
       <div id="Performance" class="w3-container w3-black city1" style="display:none; height: 100%;">
@@ -123,6 +188,56 @@ function openViewer(evt, cityName) {
   }
   document.getElementById(cityName).style.display = "block";
   evt.currentTarget.className += " w3-white";
+}
+
+
+
+
+
+
+var exp_modal = document.getElementById("Export");
+var exp_btn = document.getElementById("myExport");
+var exp_span = document.getElementById("exp_close");
+exp_btn.onclick = function() {
+  exp_modal.style.display = "block";
+}
+exp_span.onclick = function() {
+  exp_modal.style.display = "none";
+}
+window.onclick = function(event) {
+  if (event.target == exp_modal) {
+    exp_modal.style.display = "none";
+  }
+}
+
+var exa_modal = document.getElementById("Examples");
+var exa_btn = document.getElementById("myExamples");
+var exa_span = document.getElementById("exa_close");
+exa_btn.onclick = function() {
+  exa_modal.style.display = "block";
+}
+exa_span.onclick = function() {
+  exa_modal.style.display = "none";
+}
+window.onclick = function(event) {
+  if (event.target == exa_modal) {
+    exa_modal.style.display = "none";
+  }
+}
+
+var help_modal = document.getElementById("Help");
+var help_btn = document.getElementById("myHelp");
+var help_span = document.getElementById("help_close");
+help_btn.onclick = function() {
+  help_modal.style.display = "block";
+}
+help_span.onclick = function() {
+  help_modal.style.display = "none";
+}
+window.onclick = function(event) {
+  if (event.target == help_modal) {
+    help_modal.style.display = "none";
+  }
 }
 
 </script>

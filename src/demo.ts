@@ -5,9 +5,8 @@ import { specRewrite } from "vega-plus"
 var htmldiff = require("../dependencies/htmldiff.js")
 import { view2dot } from '../dependencies/view2dot'
 var hpccWasm = window["@hpcc-js/wasm"];
-import { DuckDB } from "../src"
-import {tableFromJson, vegaplus_spec, vega_spec} from "./main"
-import { sign } from 'crypto';
+import { DuckDB, SqliteDB } from "../src"
+import {tableFromJson, flights_vegaplus_spec, flights_vega_spec, car_duckdb_spec, cars_spec} from "./main"
 
 
 
@@ -18,19 +17,37 @@ require('brace/theme/github');
 var editor = ace.edit('editor');
 editor.getSession().setMode('ace/mode/json');
 editor.setTheme('ace/theme/github');
+editor.setOption("wrap",true);
+editor.setOption("scrollPastEnd", 1);
 
-editor.setValue(JSON.stringify(vegaplus_spec, null, 3));
 
-// var vseditor = ace.edit(document.querySelectorAll('pre[id=editor]')[0]);
-// vseditor.getSession().setMode('ace/mode/json');
-// vseditor.setTheme('ace/theme/github');
-// vseditor.setValue(JSON.stringify(vega_spec, null, 3));
+if ((document.getElementById('VegaType') as HTMLInputElement).value == "Vega"){
+    editor.setValue(JSON.stringify(flights_vega_spec, null, 2));
+    // editor.resize()
+}
+else{
+    editor.setValue(JSON.stringify(flights_vegaplus_spec, null, 2));
+    // editor.resize()
+}
+
+
+var vseditor = ace.edit(document.querySelectorAll('pre[id=editor]')[0]);
+vseditor.getSession().setMode('ace/mode/json');
+vseditor.setTheme('ace/theme/github');
 
 var url_loc = window.location.origin.toString();
 var db = DuckDBs()
-var csv_url = require("../data/flights-3m.csv");
-vega_spec["data"][0]["url"] = url_loc + csv_url
+var SQL_db = sqliteDB()
 
+
+
+async function sqliteDB(){
+  var data_url = require("../data/sql.db")
+  data_url = url_loc + data_url
+  const db = new SqliteDB<"Test">(data_url)
+  await db.initialize();
+  return db
+}
 
 async function DuckDBs(){
   var url = require("../data/flights-3m.parquet");
@@ -57,56 +74,129 @@ db.then(function(db){
       const results = await db.queries(query);
       return results;
     }
+    SQL_db.then(function(SQL_db){
+        async function sql_query(query){
+          const results = await SQL_db.queries(query);
+          return results;
+        }
 
-    (VegaTransformDB as any).type('Serverless');
-    (VegaTransformDB as any).QueryFunction(duck_db_query);    
+        (VegaTransformDB as any).type('Serverless');
 
-    async function Run_Visualization(){
-        var sel = (document.getElementById('VegaType') as HTMLInputElement).value;
-        var vp_spec = JSON.parse(editor.getValue().toString().trim())
-        var table_name = vp_spec["data"][1]['name']
+        async function Run_Visualization(_){
 
-        const newspec_vp = specRewrite(vp_spec)
-        rename(newspec_vp.data, "dbtransform");
-        (vega as any).transforms["dbtransform"] = VegaTransformDB;
-        console.log("Vega Plus Start");  
-        const runtime_vp = vega.parse(newspec_vp);
-        const view_vp = new vega.View(runtime_vp)
-        .logLevel(vega.Info)
-        .renderer("svg")
-        .initialize(document.querySelector("#Visualization"));
-        view_vp.addDataListener('table', function(name, value) {
-            console.log(name, value);
-            tableFromJson(value, 'showData');
-          });          
-        await view_vp.runAsync();
-        console.log("Vega Plus Done");
-        tableFromJson(view_vp["_runtime"]["data"][table_name]["values"]["value"], 'showData')
-        var tmp = view_vp["_runtime"]["signals"]
-        var signal_data = []
-        for (var val of Object.keys(tmp)) {
-            if(tmp[val]['value']){
-                if(typeof(tmp[val]['value'])=='object'){
-                    signal_data.push({"Signal": val, "Value": JSON.stringify(tmp[val]['value'])})
+            var vp_spec = JSON.parse(editor.getValue().toString().trim())
+            var sel = (document.getElementById('VegaType') as HTMLInputElement).value;
+            console.log(vseditor.getValue())
+            var table_name = JSON.parse(vseditor.getValue().toString().trim())["source"]
+            if (sel == "Vega"){
+                const newspec = specRewrite(vp_spec);
+                const runtime = vega.parse(newspec);
+                const view = new vega.View(runtime)
+                .logLevel(vega.Info)
+                .renderer("svg")
+                .initialize(document.querySelector("#Visualization"));
+                await view.runAsync();
+                view.addDataListener(table_name, function(name, value) {
+                    tableFromJson(value, 'showData');
+                });
+                tableFromJson(view["_runtime"]["data"][table_name]["values"]["value"], 'showData')
+
+                var tmp = view["_runtime"]["signals"]
+                for (var val of Object.keys(tmp)) {
+                    view.addSignalListener(val, function(name, value) {
+                        tmp[name]['value'] = value
+                        signal_viewer(tmp)
+                      });    
                 }
-                else{
-                    signal_data.push({"Signal": val, "Value": tmp[val]['value'].toString()})
-                }
+                signal_viewer(tmp)
+                
+
+
+                view.runAfter(view => {
+                    const dot = `${view2dot(view)}`
+                    hpccWasm.graphviz.layout(dot, "svg", "dot").then(svg => {
+                    const placeholder = document.getElementById("graph-placeholder");
+                    placeholder.innerHTML = svg;
+                    });
+                })
             }
             else{
-                signal_data.push({"Signal": val, "Value": "null"})
-            }
-          }
-        tableFromJson(signal_data, 'signalData')
-        view_vp.runAfter(view => {
-            const dot = `${view2dot(view)}`
-            hpccWasm.graphviz.layout(dot, "svg", "dot").then(svg => {
-              const placeholder = document.getElementById("graph-placeholder");
-              placeholder.innerHTML = svg;
-            });
-          })
-    }
+                if (sel == "DuckDB"){
+                    (VegaTransformDB as any).QueryFunction(duck_db_query);            
+                }
+                else{
+                    (VegaTransformDB as any).QueryFunction(sql_query);    
+                }
+                const newspec_vp = specRewrite(vp_spec)
+                rename(newspec_vp.data, "dbtransform");
+                (vega as any).transforms["dbtransform"] = VegaTransformDB;
+                const runtime_vp = vega.parse(newspec_vp);
+                const view_vp = new vega.View(runtime_vp)
+                .logLevel(vega.Info)
+                .renderer("svg")
+                .initialize(document.querySelector("#Visualization"));
+                view_vp.addDataListener(table_name, function(name, value) {
+                    tableFromJson(value, 'showData');
+                  });
+                  
+                await view_vp.runAsync();
+                tableFromJson(view_vp["_runtime"]["data"][table_name]["values"]["value"], 'showData')
 
-    Run_Visualization()
-    document.getElementById('run').addEventListener('click', Run_Visualization);
+                var tmp = view_vp["_runtime"]["signals"]
+                for (var val of Object.keys(tmp)) {
+                    view_vp.addSignalListener(val, function(name, value) {
+                        tmp[name]['value'] = value
+                        signal_viewer(tmp)
+                      });    
+                }
+                signal_viewer(tmp)
+
+                view_vp.runAfter(view => {
+                    const dot = `${view2dot(view)}`
+                    hpccWasm.graphviz.layout(dot, "svg", "dot").then(svg => {
+                    const placeholder = document.getElementById("graph-placeholder");
+                    placeholder.innerHTML = svg;
+                    });
+                })
+            }
+            
+        }
+
+        function signal_viewer(signal){
+              var signal_data = []
+              for (var val of Object.keys(signal)) {
+                  if(signal[val]['value']){
+                      if(typeof(signal[val]['value'])=='object'){
+                          signal_data.push({"Signal": val, "Value": JSON.stringify(signal[val]['value'])})
+                      }
+                      else{
+                          signal_data.push({"Signal": val, "Value": signal[val]['value'].toString()})
+                      }
+                  }
+                  else{
+                      signal_data.push({"Signal": val, "Value": "null"})
+                  }
+              }
+              tableFromJson(signal_data, 'signalData')
+
+        }
+
+        function examples(_, spec:any, name:any, valueToSelect:any){
+            let element = document.getElementById("VegaType") as HTMLInputElement;
+            vseditor.setValue('{"source":"' + name + '"}')
+            element.value = valueToSelect;
+            editor.setValue(JSON.stringify(spec, null, 2));
+            Run_Visualization(null)
+        }
+
+        Run_Visualization(null)
+        document.getElementById('run').addEventListener('click', Run_Visualization);
+        document.getElementById('CarsDuckDB').addEventListener('click', event => {examples(event, car_duckdb_spec, "cars", "DuckDB")});
+        document.getElementById('CarsSQL').addEventListener('click', event => {examples(event, car_duckdb_spec, "cars", "SQLite")});
+        document.getElementById('FlightsDuckDB').addEventListener('click', event => {examples(event, flights_vegaplus_spec, "table", "DuckDB")});
+        document.getElementById('FlightsSQL').addEventListener('click', event => {examples(event, flights_vegaplus_spec, "table", "SQLite")});
+        document.getElementById('CarsVega').addEventListener('click', event => {examples(event, cars_spec, "cars", "Vega")});
+
+
+    });
 });

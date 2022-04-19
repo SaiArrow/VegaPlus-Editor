@@ -42,7 +42,7 @@ export function tableFromJson(myBooks, elem) {
 // tableFromJson()
 
 
-export var vegaplus_spec = {
+export var flights_vegaplus_spec = {
   "$schema": "https://vega.github.io/schema/vega/v5.json",
   "autosize": "pad",
   "padding": 5,
@@ -221,7 +221,7 @@ export var vegaplus_spec = {
   }
 };
 
-export  var vega_spec = {
+export  var flights_vega_spec = {
   "$schema": "https://vega.github.io/schema/vega/v5.json",
   "autosize": "pad",
   "padding": 5,
@@ -252,7 +252,7 @@ export  var vega_spec = {
     {
       "name": "flights",
       "format": {"type":"csv"},
-      "url": "temp"
+      "url": "https://raw.githubusercontent.com/vega/vega-plus/master/packages/demo/data/flights-3m.csv"
     },
     {
       "name": "table",
@@ -394,4 +394,209 @@ export  var vega_spec = {
       "minExtent": 30
     }
   }
+}
+
+export var car_duckdb_spec = {
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "width": 400,
+  "height": 200,
+  "padding": 10,
+  "data": [
+    {
+      "name": "cars_raw",
+      "transform": [
+        {
+          "type": "dbtransform",
+          "relation": "cars"
+        }
+      ]
+    },
+    {
+      "name": "cars",
+      "source": "cars_raw",
+      "transform": [
+        {
+          "type": "aggregate",
+          "fields": [
+            "miles_per_gallon"
+          ],
+          "ops": [
+            "average"
+          ],
+          "as": [
+            "miles_per_gallon"
+          ],
+          "groupby": [
+            "Cylinders"
+          ]
+        }
+      ]
+    }
+  ],
+  "scales": [
+    {
+      "name": "xscale",
+      "type": "band",
+      "domain": {
+        "data": "cars",
+        "field": "Cylinders"
+      },
+      "range": "width",
+      "padding": 0.05,
+      "round": true
+    },
+    {
+      "name": "yscale",
+      "domain": {
+        "data": "cars",
+        "field": "miles_per_gallon"
+      },
+      "nice": true,
+      "range": "height"
+    }
+  ],
+  "axes": [
+    {
+      "orient": "bottom",
+      "scale": "xscale",
+      "title": "Number of Cylinders"
+    },
+    {
+      "orient": "left",
+      "scale": "yscale",
+      "title": "Miles per Gallon"
+    }
+  ],
+  "marks": [
+    {
+      "type": "rect",
+      "from": {
+        "data": "cars"
+      },
+      "encode": {
+        "enter": {
+          "x": {
+            "scale": "xscale",
+            "field": "Cylinders"
+          },
+          "width": {
+            "scale": "xscale",
+            "band": 1
+          },
+          "y": {
+            "scale": "yscale",
+            "field": "miles_per_gallon"
+          },
+          "y2": {
+            "scale": "yscale",
+            "value": 0
+          }
+        },
+        "update": {
+          "fill": {
+            "value": "steelblue"
+          }
+        }
+      }
+    }
+  ]
+}
+
+
+export var cars_spec = {
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "width": 400,
+  "height": 200,
+  "padding": 10,
+  "data": [
+    {
+      "name": "cars",
+      "format": {"type":"csv"},
+      "url": "https://raw.githubusercontent.com/SaiArrow/vega-plus/master/sample_data/data/cars.csv",
+      "transform": [
+        {
+          "type": "aggregate",
+          "fields": [
+            "Miles_per_Gallon"
+          ],
+          "ops": [
+            "average"
+          ],
+          "as": [
+            "Miles_per_Gallon"
+          ],
+          "groupby": [
+            "Cylinders"
+          ]
+        }
+      ]
+    }
+  ],
+  "scales": [
+    {
+      "name": "xscale",
+      "type": "band",
+      "domain": {
+        "data": "cars",
+        "field": "Cylinders"
+      },
+      "range": "width",
+      "padding": 0.05,
+      "round": true
+    },
+    {
+      "name": "yscale",
+      "domain": {
+        "data": "cars",
+        "field": "Miles_per_Gallon"
+      },
+      "nice": true,
+      "range": "height"
+    }
+  ],
+  "axes": [
+    {
+      "orient": "bottom",
+      "scale": "xscale",
+      "title": "Number of Cylinders"
+    },
+    {
+      "orient": "left",
+      "scale": "yscale",
+      "title": "Miles per Gallon"
+    }
+  ],
+  "marks": [
+    {
+      "type": "rect",
+      "from": {
+        "data": "cars"
+      },
+      "encode": {
+        "enter": {
+          "x": {
+            "scale": "xscale",
+            "field": "Cylinders"
+          },
+          "width": {
+            "scale": "xscale",
+            "band": 1
+          },
+          "y": {
+            "scale": "yscale",
+            "field": "Miles_per_Gallon"
+          },
+          "y2": {
+            "scale": "yscale",
+            "value": 0
+          }
+        },
+        "update": {
+          "fill": {
+            "value": "steelblue"
+          }
+        }
+      }
+    }
+  ]
 }
