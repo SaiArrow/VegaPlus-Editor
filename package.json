@@ -1,8 +1,8 @@
 {
-  "name": "vega-db-demo",
+  "name": "vega-editor-demo",
   "version": "0.0.0",
   "main": "index.js",
-  "repository": "git@github.com:git@github.com:vega/vega-plus.git",
+  "homepage": "https://SaiArrow.github.io/VegaPlus-Editor",
   "author": "Sai Yerramreddy",
   "license": "BSD-3-Clause",
   "private": true,
@@ -29,8 +29,8 @@
   "scripts": {
     "cleanup": "rm -rf .cache dist node_modules",
     "start": "parcel index.html --https",
-    "build": "yarn --frozen-lockfile && parcel build --public-url '/vegaplus/' ./index.html --detailed-report",
-    "deploy": "yarn build && gh-pages -d dist"
+    "build": "yarn --frozen-lockfile",
+    "deploy": "gh-pages -b master -d build"
   },
   "devDependencies": {
     "gh-pages": "^3.2.3",
