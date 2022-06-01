@@ -7,6 +7,8 @@ import { view2dot } from '../dependencies/view2dot'
 var hpccWasm = window["@hpcc-js/wasm"];
 import { DuckDB, SqliteDB } from "../src"
 import {tableFromJson, flights_vegaplus_spec, flights_vega_spec, car_duckdb_spec, cars_spec} from "./main"
+import {Chart, registerables} from "chart.js"
+Chart.register(...registerables);
 
 
 
@@ -38,6 +40,44 @@ vseditor.setTheme('ace/theme/github');
 var url_loc = window.location.origin.toString();
 var db = DuckDBs()
 var SQL_db = sqliteDB()
+
+const ctx = document.getElementById('myChart') as HTMLCanvasElement;
+const myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: [],
+        datasets: [{
+            label: 'Runtime Latency (ms)',
+            data: [],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        indexAxis: 'y',
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
 
 
 function download(filename, text) {
@@ -82,6 +122,7 @@ function rename(dataSpec, type) {
   }
 
 db.then(function(db){
+    var start, end, time;
     async function duck_db_query(query){
       const results = await db.queries(query);
       return results;
@@ -100,6 +141,9 @@ db.then(function(db){
             var sel = (document.getElementById('VegaType') as HTMLInputElement).value;
             console.log(vseditor.getValue())
             var table_name = JSON.parse(vseditor.getValue().toString().trim())["source"]
+            console.log(myChart.data.datasets[0].data, myChart.data.labels, "Here")
+            var temp;
+
             if (sel == "Vega"){
                 const newspec = specRewrite(vp_spec);
                 const runtime = vega.parse(newspec);
@@ -107,7 +151,18 @@ db.then(function(db){
                 .logLevel(vega.Info)
                 .renderer("svg")
                 .initialize(document.querySelector("#Visualization"));
+                start = Date.now()
                 await view.runAsync();
+                end = Date.now()
+                
+                temp = myChart.data.labels;
+                temp.push(sel.toString() + "-" + (new Date().toUTCString()).toString())
+                myChart.data.labels = temp;
+
+                temp = myChart.data.datasets[0].data;
+                temp.push(end-start);
+                myChart.data.datasets[0].data = temp;
+
                 view.addDataListener(table_name, function(name, value) {
                     tableFromJson(value, 'showData');
                 });
@@ -150,8 +205,18 @@ db.then(function(db){
                 view_vp.addDataListener(table_name, function(name, value) {
                     tableFromJson(value, 'showData');
                   });
-                  
+                start = Date.now();
                 await view_vp.runAsync();
+                end = Date.now();
+
+                temp = myChart.data.labels;
+                temp.push(sel.toString() + "-" + (new Date().toUTCString()).toString())
+                myChart.data.labels = temp;
+
+                temp = myChart.data.datasets[0].data;
+                temp.push(end-start);
+                myChart.data.datasets[0].data = temp;
+
                 tableFromJson(view_vp["_runtime"]["data"][table_name]["values"]["value"], 'showData')
 
                 var tmp = view_vp["_runtime"]["signals"]
@@ -171,6 +236,7 @@ db.then(function(db){
                     });
                 })
             }
+            myChart.update();
             
         }
 
