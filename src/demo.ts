@@ -7,9 +7,12 @@ import { view2dot } from '../dependencies/view2dot'
 var hpccWasm = window["@hpcc-js/wasm"];
 import { DuckDB, SqliteDB } from "../src"
 import {tableFromJson, flights_vegaplus_spec, flights_vega_spec, car_duckdb_spec, cars_spec} from "./main"
-import {Chart, registerables} from "chart.js"
-Chart.register(...registerables);
+import {Chart, registerables, LinearScale, CategoryScale} from "chart.js"
+import { BarWithErrorBarsController, BarWithErrorBar } from 'chartjs-chart-error-bars';
 
+
+Chart.register(...registerables);
+Chart.register(BarWithErrorBarsController, BarWithErrorBar, LinearScale, CategoryScale);
 
 
 var ace = require('brace');
@@ -42,8 +45,8 @@ var db = DuckDBs()
 var SQL_db = sqliteDB()
 
 const ctx = document.getElementById('myChart') as HTMLCanvasElement;
-const myChart = new Chart(ctx, {
-    type: 'bar',
+const myChart = new Chart(ctx.getContext('2d'), {
+    type: BarWithErrorBarsController.id,
     data: {
         labels: [],
         datasets: [{
@@ -156,21 +159,32 @@ db.then(function(db){
                 end = Date.now()
                 
                 temp = myChart.data.labels;
-                temp.push(sel.toString() + "-" + (new Date().toUTCString()).toString())
+                temp.push(sel.toString() + ": " + (new Date().toUTCString()).toString())
                 myChart.data.labels = temp;
 
                 temp = myChart.data.datasets[0].data;
-                temp.push(end-start);
+                temp.push({'x':end-start,'xMin':(end-start)*0.95,'xMax':(end-start)*1.05,});
                 myChart.data.datasets[0].data = temp;
 
                 view.addDataListener(table_name, function(name, value) {
+                    end = Date.now()
+                    temp = myChart.data.labels;
+                    temp.push("Interaction: " + (new Date().toUTCString()).toString())
+                    myChart.data.labels = temp;
+
+                    temp = myChart.data.datasets[0].data;
+                    temp.push({'x':end-start,'xMin':(end-start)*0.95,'xMax':(end-start)*1.05,});
+                    myChart.data.datasets[0].data = temp;
+
                     tableFromJson(value, 'showData');
+                    myChart.update();
                 });
                 tableFromJson(view["_runtime"]["data"][table_name]["values"]["value"], 'showData')
 
                 var tmp = view["_runtime"]["signals"]
                 for (var val of Object.keys(tmp)) {
                     view.addSignalListener(val, function(name, value) {
+                        start = Date.now()
                         tmp[name]['value'] = value
                         signal_viewer(tmp)
                       });    
@@ -203,18 +217,28 @@ db.then(function(db){
                 .renderer("svg")
                 .initialize(document.querySelector("#Visualization"));
                 view_vp.addDataListener(table_name, function(name, value) {
+                    end = Date.now();
+                    temp = myChart.data.labels;
+                    temp.push("Interaction: " + (new Date().toUTCString()).toString())
+                    myChart.data.labels = temp;
+    
+                    temp = myChart.data.datasets[0].data;
+                    temp.push({'x':end-start,'xMin':(end-start)*0.95,'xMax':(end-start)*1.05,});
+                    myChart.data.datasets[0].data = temp;
                     tableFromJson(value, 'showData');
+                    myChart.update();
                   });
+
                 start = Date.now();
                 await view_vp.runAsync();
                 end = Date.now();
 
                 temp = myChart.data.labels;
-                temp.push(sel.toString() + "-" + (new Date().toUTCString()).toString())
+                temp.push(sel.toString() + ": " + (new Date().toUTCString()).toString())
                 myChart.data.labels = temp;
 
                 temp = myChart.data.datasets[0].data;
-                temp.push(end-start);
+                temp.push({'x':end-start,'xMin':(end-start)*0.95,'xMax':(end-start)*1.05,});
                 myChart.data.datasets[0].data = temp;
 
                 tableFromJson(view_vp["_runtime"]["data"][table_name]["values"]["value"], 'showData')
@@ -222,6 +246,7 @@ db.then(function(db){
                 var tmp = view_vp["_runtime"]["signals"]
                 for (var val of Object.keys(tmp)) {
                     view_vp.addSignalListener(val, function(name, value) {
+                        start = Date.now();
                         tmp[name]['value'] = value
                         signal_viewer(tmp)
                       });    
